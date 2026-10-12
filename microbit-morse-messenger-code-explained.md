@@ -1,9 +1,9 @@
 This is the attempt for some kid-friendly explanations ... age group 12-13
 
-## explanation
+## Purpose
 The code is designed for a **BBC micro:bit** to act as a wireless Morse code communicator. It allows you to input dots and dashes, decode them into letters, and send the full message to another micro:bit via radio. 
 
-# Initialization and Setup
+## Initialization and Setup
 
 - **`from microbit import *`**: Imports the standard library called "microbit"  that is needed to control micro:bit hardware (display, buttons, accelerometer).
 	- what does this mean? 
@@ -13,15 +13,15 @@ The code is designed for a **BBC micro:bit** to act as a wireless Morse code com
 - **`radio.on()`**: Powers on the micro:bit’s radio antenna, which you need to use it as "walkie-talkie"; the radio is usually kept OFF to save battery, so you have to tell the micro:bit specifically to turn it on to listen for signals.
 - **`radio.config(group=17)`**: Sets the radio to "group 17." Both the sender and receiver must be on the same group number to communicate.
 
-# The Dictionary - the code book
+## The Dictionary - the code book
 - **`MORSE = {...}`**: A dictionary that maps Morse code strings (dots and dashes) to alphanumeric characters (eg "A"). It's basically a code book. The micro:bit doesn't know that a "dot-dash" (`.-`) means the letter "A." This section is where we give the micro:bit a list of rules to follow so it can translate (aka look-up or match) the dots and dashes into real letters.
 
-# Variable Buffers - kind of like a storage for our letters and messages before we send them
+## Variable Buffers - kind of like a storage for our letters and messages before we send them
 
 - **`current_letter = ""`**: A temporary string (a bunch of characters) that stores the dots and dashes you are currently typing for a single character. Kind of like a "scrap piece of paper" where the micro:bit scribbles down the dots and dashes, so it can later assemble them to a letter.
 - **`message_buffer = ""`**: Stores the actual translated letters (e.g., "HELLO") before they are sent. 
 
-# Display Logic - displaying what you type
+## Display Logic - displaying what you type
 
 - **`def show_current():`**: A helper function that visualizes your typing.
 	- it basically says: Whenever I call this name `show_current()`, look at my scrap paper `current_letter` and draw the dots and dashes on the screen so I can see what I'm typing. 
@@ -42,13 +42,13 @@ for i, c in enumerate(current_letter[-5:]):
 - so this way you can see whether you've typed a dash or a dot.
 - This will make more sense once you read about the code in the `while loop` further down - because in each loop (see further down), we call on this `show_current()` function and every time we do this, the micro:bit will show us the dots and dashes as we create them by pressing buttons.
 
-# The Main Loop (while True) - this runs continuously, it's like a spinning mouse wheel
+## The Main Loop (while True) - this runs continuously, it's like a spinning mouse wheel
 
 This section runs continuously to check for user input: that means it checks whether you press button A, or button B, or whether you shake or whether you touch the logo or whether you have an incoming message. And then it does things according to what you coded should happen.
 
 **`while True:`**: This tells the micro:bit to **wake up and stay alert**. It runs the following instructions over and over again, many times a second, so it doesn't miss a button press. A button press is remembered until the loop comes back to check, so a quick tap still counts. This works because in Python, `True` means _true forever_, so **“while True”** means: “As long as this is true (which it always is), keep looping through whatever code comes next" ... and that is how we create a never-ending-loop (well, at least until you turn off the micro:bit).
 
-## 1. **Inputting Morse:**
+### 1. Inputting Morse:
 ```python
 if button_a.was_pressed():   #if I press button A
     current_letter += "."        # add a dot (.) to the `current_letter`, which is your scrap paper, remember?
@@ -57,7 +57,7 @@ if button_a.was_pressed():   #if I press button A
  - and we do the same for button b:
     - **`button_b.was_pressed()`**: Adds a dash (`-`) to the `current_letter`, which is your scrap paper and then shows on our display that we pressed a dash
     - the symbol ``+=`` is a short version of saying `current_letter = current_letter + "."` , so take `current_letter` and add a dot and then stick the result back into `current_letter`. So if `current_letter` already had a dot in it, we now add another dot and now `current_letter` contains two dots. That's how we can stitch together a whole Morse code letter.
-## 2. **Decoding your dots and dashes into a letter and finishing a letter (The "Shake"):**
+### 2. Decoding your dots and dashes into a letter and finishing a letter (The "Shake"):
 ```python
 if accelerometer.was_gesture("shake"):
 	if current_letter != "":  # check that `current_letter` is not empty
@@ -83,7 +83,7 @@ if accelerometer.was_gesture("shake"):
 - `display.clear()` we also clear our display and then
 - `display.show(letter)` and then we show our letter for us to quickly check that this is the letter we wanted (here it's handy again that we previously put our letter into the variable "letter", so now we can quickly "call" it )
 - `sleep(500)`: here we just make the micro:bit wait or "sleep" for a little bit, so things don't' move too fast, you can certainly play around with this value  and pick one you like
-## 3. **adding a space** in between words:
+### 3. Adding a space in between words:
 ```python
     if pin_logo.is_touched():
         message_buffer += " "
@@ -95,7 +95,7 @@ if accelerometer.was_gesture("shake"):
 	- remember `+=` is like saying add a space to whatever is already in `message_buffer` and then stick all of that back into the container (variable) `message_buffer`
 - so you can press the logo after each word:
 	- press A or B to create letters, shake to move each letter to the message buffer and don't forget to touch the logo to create a space after each word (note: make sure you only press the logo briefly, a long press I think will add a few spaces)
-## 4. **send  your message**:
+### 4. Send  your message:
 - **`button_a.is_pressed() and button_b.is_pressed()`**: If both buttons are held at once, it triggers the **`radio.send(message_buffer)`** command, transmitting your text (which you collected in the `message_buffer`) to any other micro:bit nearby (that is on the same group).
 - Note: did you spot the difference? 
 	- `was_pressed()` means "did it get clicked since last time?" and `is_pressed()` means "is it held down right now?" 
@@ -110,7 +110,7 @@ if button_a.is_pressed() and button_b.is_pressed():
 		display.clear()             #clear the display
 		sleep(500)                  # create a little break
 ```
-## 5. **Receiving:**
+### 5. Receiving:
 - to receive a message we have this code:
 ```python
 # RECEIVE
