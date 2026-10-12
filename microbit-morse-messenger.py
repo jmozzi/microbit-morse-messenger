@@ -1,4 +1,4 @@
-# I did this with miss 12: trying to turn a micro:bit into a morse/letter radio
+# Little project with miss 12: trying to turn a micro:bit into a morse/letter radio
 # Type letters in Morse (dots/dashes)
 # Shake to finish a letter → it gets decoded locally
 # Add letters to a message buffer
@@ -10,7 +10,7 @@ from microbit import *
 import radio
 
 radio.on()
-radio.config(group=17)
+radio.config(group=17)  
 
 # Morse dictionary for decoding
 MORSE = {
